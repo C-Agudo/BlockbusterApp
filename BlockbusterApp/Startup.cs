@@ -2,11 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BlockbusterApp.src.Application.UseCase;
+using BlockbusterApp.src.Domain;
+using BlockbusterApp.src.Domain.UserAggregate;
+using BlockbusterApp.src.Domain.UserAggregate.Service;
+using BlockbusterApp.src.Infrastructure.Persistence.Repository;
+using BlockbusterApp.src.Infrastructure.Service.Hashing;
+using BlockbusterApp.src.Infrastructure.Service.User;
+using BlockbusterApp.src.Shared.Application.Bus.UseCase;
+using BlockbusterApp.src.Shared.Infrastructure.Bus.Middleware;
+using BlockbusterApp.src.Shared.Infrastructure.Bus.UseCase;
+using BlockbusterApp.src.Shared.Infrastructure.Persistence.Context;
+using BlockbusterApp.src.Shared.Infrastructure.Persistence.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -27,6 +40,31 @@ namespace BlockbusterApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContextPool<BlockbusterAppContext>(options => options
+                .UseMySql(Configuration.GetConnectionString("DefaultConnection"))
+            );
+            //Application
+            services.AddScoped<UserConverter>();
+            services.AddScoped<IUseCase, SignUpUserUseCase>();
+
+            //Domain
+            services.AddScoped<IUserFactory, UserFactory>();
+            services.AddScoped<SignUpUserValidator>();
+
+            //Infra
+            services.AddScoped<IHashing, DefaultHashing>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddSingleton<BlockbusterAppContext>();
+
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+            services.AddSingleton<IUseCaseBus, UseCaseBus>();
+            services.AddScoped<IRequest, SignUpUserRequest>();
+            services.AddScoped<IResponse, SignUpUserResponse>();
+
+            services.AddScoped<UseCaseMiddleware>();
+            services.AddSingleton<TransactionMiddleware>();
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddMvcCore().AddVersionedApiExplorer(o => o.GroupNameFormat = "'v'VVV");
@@ -58,8 +96,19 @@ namespace BlockbusterApp
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApiVersionDescriptionProvider provider)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApiVersionDescriptionProvider provider, IServiceProvider serviceProvider)
         {
+            IUseCaseBus useCaseBus = serviceProvider.GetService<IUseCaseBus>();
+            IUseCase signUpUserUseCase = serviceProvider.GetService<IUseCase>();
+            useCaseBus.Subscribe(signUpUserUseCase);
+
+            List<IMiddlewareHandler> middlewareHandlers = new List<IMiddlewareHandler>
+            {
+                serviceProvider.GetService<TransactionMiddleware>()
+            };
+
+            useCaseBus.SetMiddlewares(middlewareHandlers);
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

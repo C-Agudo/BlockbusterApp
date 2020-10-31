@@ -1,4 +1,5 @@
 ﻿using BlockbusterApp.src.Shared.Application.Bus.UseCase;
+using BlockbusterApp.src.Shared.Infrastructure.Bus.Middleware;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,17 +9,23 @@ namespace BlockbusterApp.src.Shared.Infrastructure.Bus.UseCase
 {
     public class UseCaseBus : IUseCaseBus
     {
-        private Dictionary<string, IUseCase> useCases;
+        private Dictionary<string, UseCaseMiddleware> useCases;
+        private List<IMiddlewareHandler> middlewareHanders;
 
         public UseCaseBus()
         {
-            useCases = new Dictionary<string, IUseCase>();
+            this.useCases = new Dictionary<string, UseCaseMiddleware>();
+        }
+
+        public void SetMiddlewares(List<IMiddlewareHandler> middlewareHanders)
+        {
+            this.middlewareHanders = middlewareHanders;
         }
 
         public void Subscribe(IUseCase useCase)
         {
             string className = useCase.GetType().ToString();
-            useCases.Add(className, useCase);
+            useCases.Add(className, new UseCaseMiddleware(useCase));
         }
 
         public IResponse Dispatch(IRequest req)
@@ -33,7 +40,15 @@ namespace BlockbusterApp.src.Shared.Infrastructure.Bus.UseCase
                 throw new Exception("Not exists the usecase " + useCaseName);
             }
 
-            return useCases[useCaseName].Execute(req);
+            IMiddlewareHandler mHandler = this.useCases[useCaseName];
+
+            foreach (IMiddlewareHandler middlewareHandler in this.middlewareHanders)
+            {
+                middlewareHandler.SetNext(mHandler);
+                mHandler = middlewareHandler;
+            }
+
+            return mHandler.Handle(req);
         }
     }
 }
