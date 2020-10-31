@@ -6,7 +6,6 @@ C:\Users\ACER-1\source\repos\BlockbusterApp\BlockbusterApp\bin\Debug\netcoreapp2
 C:\Users\ACER-1\source\repos\BlockbusterApp\BlockbusterApp\bin\Debug\netcoreapp2.1\BlockbusterApp.runtimeconfig.dev.json
 C:\Users\ACER-1\source\repos\BlockbusterApp\BlockbusterApp\bin\Debug\netcoreapp2.1\BlockbusterApp.dll
 C:\Users\ACER-1\source\repos\BlockbusterApp\BlockbusterApp\bin\Debug\netcoreapp2.1\BlockbusterApp.pdb
-C:\Users\ACER-1\source\repos\BlockbusterApp\BlockbusterApp\obj\Debug\netcoreapp2.1\BlockbusterApp.csprojAssemblyReference.cache
 C:\Users\ACER-1\source\repos\BlockbusterApp\BlockbusterApp\obj\Debug\netcoreapp2.1\BlockbusterApp.AssemblyInfoInputs.cache
 C:\Users\ACER-1\source\repos\BlockbusterApp\BlockbusterApp\obj\Debug\netcoreapp2.1\BlockbusterApp.AssemblyInfo.cs
 C:\Users\ACER-1\source\repos\BlockbusterApp\BlockbusterApp\obj\Debug\netcoreapp2.1\BlockbusterApp.RazorAssemblyInfo.cache
@@ -15,4 +14,5 @@ C:\Users\ACER-1\source\repos\BlockbusterApp\BlockbusterApp\obj\Debug\netcoreapp2
 C:\Users\ACER-1\source\repos\BlockbusterApp\BlockbusterApp\obj\Debug\netcoreapp2.1\BlockbusterApp.dll
 C:\Users\ACER-1\source\repos\BlockbusterApp\BlockbusterApp\obj\Debug\netcoreapp2.1\BlockbusterApp.pdb
 C:\Users\ACER-1\source\repos\BlockbusterApp\BlockbusterApp\obj\Debug\netcoreapp2.1\BlockbusterApp.genruntimeconfig.cache
+C:\Users\ACER-1\source\repos\BlockbusterApp\BlockbusterApp\obj\Debug\netcoreapp2.1\BlockbusterApp.csprojAssemblyReference.cache
 C:\Users\ACER-1\source\repos\BlockbusterApp\BlockbusterApp\obj\Debug\netcoreapp2.1\BlockbusterApp.csproj.CoreCompileInputs.cache
