@@ -1,4 +1,5 @@
 ﻿using BlockbusterApp.src.Domain;
+using BlockbusterApp.src.Domain.CountryAggregate.Service;
 using BlockbusterApp.src.Domain.UserAggregate;
 using BlockbusterApp.src.Domain.UserAggregate.Service;
 using BlockbusterApp.src.Shared.Application.Bus.UseCase;
@@ -15,12 +16,15 @@ namespace BlockbusterApp.src.Application.UseCase
         private SignUpUserValidator userValidator;
         private IUserRepository userRepository;
         private UserConverter userConverter;
-        public SignUpUserUseCase(IUserFactory userFactory, SignUpUserValidator userValidator, IUserRepository userRepository, UserConverter userConverter)
+        private CountryCodeValidatorAdapter countryValidator;
+        public SignUpUserUseCase(IUserFactory userFactory, SignUpUserValidator userValidator, IUserRepository userRepository, UserConverter userConverter, CountryCodeValidatorAdapter countryValidator)
         {
             this.userFactory = userFactory;
             this.userValidator = userValidator;
             this.userRepository = userRepository;
             this.userConverter = userConverter;
+            this.countryValidator = countryValidator;
+
         }
 
         public IResponse Execute(IRequest req)
@@ -39,6 +43,7 @@ namespace BlockbusterApp.src.Application.UseCase
             );
 
             userValidator.Validate(user.userEmail);
+            countryValidator.Validate(user.userCountry);
             userRepository.Add(user);
             return userConverter.Convert();
         }
