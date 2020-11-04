@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace BlockbusterApp.src.Domain.CountryAggregate.Service
 {
-    public class GetCountryValidator
+    public class CountryFinderValidator
     {
         private ICountryRepository countryRepository;
 
-        public GetCountryValidator(ICountryRepository countryRepository)
+        public CountryFinderValidator(ICountryRepository countryRepository)
         {
             this.countryRepository = countryRepository;
         }

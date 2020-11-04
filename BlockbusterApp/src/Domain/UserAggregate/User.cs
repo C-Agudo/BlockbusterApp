@@ -1,4 +1,5 @@
-﻿using BlockbusterApp.src.Shared.Domain;
+﻿using BlockbusterApp.src.Domain.UserAggregate.Event;
+using BlockbusterApp.src.Shared.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -58,6 +59,19 @@ namespace BlockbusterApp.src.Domain.UserAggregate
                 userCountry,
                 userRole
             );
+
+            user.Record(new UserSignedUpEvent(
+                user.userId.GetValue(),
+                new Dictionary<string, string>()
+                    {
+                        ["email"] = user.userEmail.GetValue(),
+                        ["firstname"] = user.userFirstname.GetValue(),
+                        ["lastname"] = user.userLastname.GetValue(),
+                        ["country"] = user.userCountry.GetValue(),
+                        ["role"] = user.userRole.GetValue()
+                    }
+            ));
+
 
             return user;
         }

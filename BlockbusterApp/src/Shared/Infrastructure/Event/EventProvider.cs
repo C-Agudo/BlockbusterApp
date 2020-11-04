@@ -4,20 +4,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BlockbusterApp.src.Shared.Domain
+namespace BlockbusterApp.src.Shared.Infrastructure.Event
 {
-    public abstract class AggregateRoot
+    public class EventProvider : IEventProvider
     {
         private List<DomainEvent> events;
-
-        public AggregateRoot()
+        public EventProvider()
         {
             this.events = new List<DomainEvent>();
         }
-
-        protected void Record(DomainEvent domainEvent)
+        public void RecordEvents(List<DomainEvent> domainEvents)
         {
-            this.events.Add(domainEvent);
+           foreach(DomainEvent domainEvent in domainEvents)
+            {
+                this.events.Add(domainEvent);
+            }
         }
 
         public List<DomainEvent> ReleaseEvents()
@@ -32,6 +33,5 @@ namespace BlockbusterApp.src.Shared.Domain
         {
             this.events = new List<DomainEvent>();
         }
-    }
     }
 }

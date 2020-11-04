@@ -8,8 +8,8 @@ namespace BlockbusterApp.src.Domain.CountryAggregate
 {
     public class Country : AggregateRoot
     {
-        private CountryCode code;
-        private CountryTax tax;
+        private CountryCode code { get; }
+        private CountryTax tax { get; }
 
         private Country(CountryCode code, CountryTax tax)
         {
@@ -21,6 +21,16 @@ namespace BlockbusterApp.src.Domain.CountryAggregate
         {
             Country country = new Country(code, tax);
             return country;
+        }
+
+        public string GetCode()
+        {
+            return this.code.GetValue();
+        }
+
+        public string GetTax()
+        {
+            return this.tax.GetValue();
         }
     }
 }

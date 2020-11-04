@@ -1,8 +1,10 @@
-﻿using BlockbusterApp.src.Domain;
-using BlockbusterApp.src.Domain.CountryAggregate.Service;
+﻿using BlockbusterApp.src.Application.UseCase.Country;
+using BlockbusterApp.src.Domain;
 using BlockbusterApp.src.Domain.UserAggregate;
 using BlockbusterApp.src.Domain.UserAggregate.Service;
 using BlockbusterApp.src.Shared.Application.Bus.UseCase;
+using BlockbusterApp.src.Shared.Domain.Event;
+using BlockbusterApp.src.Shared.Infrastructure.Bus.UseCase;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,15 +18,24 @@ namespace BlockbusterApp.src.Application.UseCase
         private SignUpUserValidator userValidator;
         private IUserRepository userRepository;
         private UserConverter userConverter;
-        private CountryCodeValidatorAdapter countryValidator;
-        public SignUpUserUseCase(IUserFactory userFactory, SignUpUserValidator userValidator, IUserRepository userRepository, UserConverter userConverter, CountryCodeValidatorAdapter countryValidator)
+        private IEventProvider eventProvider;
+        private IUseCaseBus useCaseBus;
+        public SignUpUserUseCase
+        (
+            IUserFactory userFactory, 
+            SignUpUserValidator userValidator, 
+            IUserRepository userRepository, 
+            UserConverter userConverter, 
+            IEventProvider eventProvider,
+            IUseCaseBus useCaseBus
+        )
         {
             this.userFactory = userFactory;
             this.userValidator = userValidator;
             this.userRepository = userRepository;
             this.userConverter = userConverter;
-            this.countryValidator = countryValidator;
-
+            this.eventProvider = eventProvider;
+            this.useCaseBus = useCaseBus;
         }
 
         public IResponse Execute(IRequest req)
@@ -42,8 +53,9 @@ namespace BlockbusterApp.src.Application.UseCase
                 request.Role
             );
 
+            eventProvider.RecordEvents(user.ReleaseEvents());
             userValidator.Validate(user.userEmail);
-            countryValidator.Validate(user.userCountry);
+            useCaseBus.Dispatch(new FindCountryRequest(user.userCountry.GetValue()));
             userRepository.Add(user);
             return userConverter.Convert();
         }

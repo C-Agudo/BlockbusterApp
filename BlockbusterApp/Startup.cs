@@ -10,8 +10,10 @@ using BlockbusterApp.src.Infrastructure.Persistence.Repository;
 using BlockbusterApp.src.Infrastructure.Service.Hashing;
 using BlockbusterApp.src.Infrastructure.Service.User;
 using BlockbusterApp.src.Shared.Application.Bus.UseCase;
+using BlockbusterApp.src.Shared.Domain.Event;
 using BlockbusterApp.src.Shared.Infrastructure.Bus.Middleware;
 using BlockbusterApp.src.Shared.Infrastructure.Bus.UseCase;
+using BlockbusterApp.src.Shared.Infrastructure.Event;
 using BlockbusterApp.src.Shared.Infrastructure.Persistence.Context;
 using BlockbusterApp.src.Shared.Infrastructure.Persistence.Repository;
 using Microsoft.AspNetCore.Builder;
@@ -55,6 +57,8 @@ namespace BlockbusterApp
             services.AddScoped<IHashing, DefaultHashing>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddSingleton<BlockbusterAppContext>();
+
+            services.AddScoped<IEventProvider, EventProvider>();
 
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
