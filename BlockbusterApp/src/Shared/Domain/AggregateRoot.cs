@@ -33,5 +33,5 @@ namespace BlockbusterApp.src.Shared.Domain
             this.events = new List<DomainEvent>();
         }
     }
-    }
+    
 }

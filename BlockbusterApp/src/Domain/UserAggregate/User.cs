@@ -67,7 +67,6 @@ namespace BlockbusterApp.src.Domain.UserAggregate
                         ["email"] = user.userEmail.GetValue(),
                         ["firstname"] = user.userFirstname.GetValue(),
                         ["lastname"] = user.userLastname.GetValue(),
-                        ["country"] = user.userCountry.GetValue(),
                         ["role"] = user.userRole.GetValue()
                     }
             ));

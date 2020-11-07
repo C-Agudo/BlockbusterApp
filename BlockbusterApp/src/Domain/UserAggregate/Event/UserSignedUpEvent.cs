@@ -20,14 +20,12 @@ namespace BlockbusterApp.src.Domain.UserAggregate.Event
 
         protected override Dictionary<string, string> Rules()
         {
-            Dictionary<string, string> rules = new Dictionary<string, string>
-            {
-                {"email", "string" },
-                {"firstname", "string" },
-                {"lastname", "string" },
-                {"country", "string" },
-                {"role", "string" }
-            };
+            Dictionary<string, string> rules = new Dictionary<string, string>();
+            
+            rules.Add("email", "string");
+            rules.Add("firstname", "string");
+            rules.Add("lastname", "string");
+            rules.Add("role", "string");           
 
             return rules;
         }
