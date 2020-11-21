@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace BlockbusterApp.src.Shared.Domain.Event
 {
-    public abstract class DomainEvent
+    public abstract class DomainEvent 
     {
         private string aggregateId;
         private Dictionary<string, string> body;

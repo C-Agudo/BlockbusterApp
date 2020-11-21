@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BlockbusterApp.src.Application.Event;
-using BlockbusterApp.src.Application.UseCase;
+using BlockbusterApp.src.Application.UseCase.Country;
 using BlockbusterApp.src.Application.UseCase.Email;
+using BlockbusterApp.src.Application.UseCase.User;
 using BlockbusterApp.src.Domain;
+using BlockbusterApp.src.Domain.CountryAggregate;
+using BlockbusterApp.src.Domain.CountryAggregate.Service;
 using BlockbusterApp.src.Domain.UserAggregate;
 using BlockbusterApp.src.Domain.UserAggregate.Service;
 using BlockbusterApp.src.Infrastructure.Persistence.Repository;
@@ -16,6 +19,7 @@ using BlockbusterApp.src.Shared.Application.Bus.UseCase;
 using BlockbusterApp.src.Shared.Application.Event;
 using BlockbusterApp.src.Shared.Domain.Event;
 using BlockbusterApp.src.Shared.Infrastructure.Bus.Middleware;
+using BlockbusterApp.src.Shared.Infrastructure.Bus.Middleware.Exception;
 using BlockbusterApp.src.Shared.Infrastructure.Bus.UseCase;
 using BlockbusterApp.src.Shared.Infrastructure.Event;
 using BlockbusterApp.src.Shared.Infrastructure.Persistence.Context;
@@ -51,17 +55,22 @@ namespace BlockbusterApp
             );
             //Application
             services.AddScoped<UserConverter>();
-            services.AddScoped<SendUserWelcomeEmailUseCase>();
+            services.AddScoped<CountryConverter>();
             services.AddScoped<SignUpUserUseCase>();
-            services.AddScoped<IEventHandler, SendWelcomeEmailWhenUserSignedUpEventHandler>();
+            services.AddScoped<FindCountryUseCase>();
+            services.AddScoped<SendUserWelcomeEmailUseCase>();
+            services.AddScoped<SendWelcomeEmailWhenUserSignedUpEventHandler>();
             services.AddScoped<SendUserWelcomeEmailConverter>();
+            services.AddScoped<ExceptionConverter>();
             //Domain
             services.AddScoped<IUserFactory, UserFactory>();
             services.AddScoped<SignUpUserValidator>();
+            services.AddScoped<CountryFinderValidator>();
 
             //Infra
             services.AddScoped<IHashing, DefaultHashing>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ICountryRepository, CountryRepository>();
             services.AddSingleton<BlockbusterAppContext>();
             services.AddScoped<IEventProvider, EventProvider>();
 
@@ -71,13 +80,17 @@ namespace BlockbusterApp
 
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
-            services.AddScoped<IUseCaseBus, UseCaseBus>();
+            services.AddSingleton<IUseCaseBus, UseCaseBus>();
             services.AddScoped<IRequest, SignUpUserRequest>();
             services.AddScoped<IResponse, SignUpUserResponse>();
+
+            services.AddScoped<IRequest, SendUserWelcomeEmailRequest>();
+            services.AddScoped<IResponse, SendUserWelcomeEmailResponse>();
 
             services.AddScoped<UseCaseMiddleware>();
             services.AddScoped<TransactionMiddleware>();
             services.AddScoped<EventDispatcherSyncMiddleware>();
+            services.AddScoped<ExceptionMiddleware>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
@@ -115,13 +128,16 @@ namespace BlockbusterApp
             IUseCaseBus useCaseBus = serviceProvider.GetService<IUseCaseBus>();
             IUseCase signUpUserUseCase = serviceProvider.GetService<SignUpUserUseCase>();
             IUseCase welcomeEmailUseCase = serviceProvider.GetService<SendUserWelcomeEmailUseCase>();
+            IUseCase findCountryUseCase = serviceProvider.GetService<FindCountryUseCase>();
             useCaseBus.Subscribe(signUpUserUseCase);
             useCaseBus.Subscribe(welcomeEmailUseCase);
+            useCaseBus.Subscribe(findCountryUseCase);
 
             List<IMiddlewareHandler> middlewareHandlers = new List<IMiddlewareHandler>
             {
                 serviceProvider.GetService<TransactionMiddleware>(),
-                serviceProvider.GetService<EventDispatcherSyncMiddleware>()
+                serviceProvider.GetService<EventDispatcherSyncMiddleware>(),
+                serviceProvider.GetService<ExceptionMiddleware>()
             };
 
             useCaseBus.SetMiddlewares(middlewareHandlers);

@@ -15,7 +15,7 @@ namespace BlockbusterApp.src.Domain.CountryAggregate.Service.Exception
 
         public static CountryNotFoundException FromCode(CountryCode countryCode)
         {
-            return new CountryNotFoundException(string.Format("Country {0} " + countryCode.GetValue() + " not is available"));
+            return new CountryNotFoundException(string.Format("Country " + countryCode.GetValue() + "  is not available"));
         }    
     }
 }

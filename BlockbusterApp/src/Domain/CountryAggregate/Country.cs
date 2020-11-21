@@ -8,18 +8,20 @@ namespace BlockbusterApp.src.Domain.CountryAggregate
 {
     public class Country : AggregateRoot
     {
-        private CountryCode code { get; }
-        private CountryTax tax { get; }
+        public CountryId id { get; }
+        public CountryCode code { get; }
+        public CountryTax tax { get; }
 
-        private Country(CountryCode code, CountryTax tax)
+        private Country(CountryId id, CountryCode code, CountryTax tax)
         {
+            this.id = id;
             this.code = code;
             this.tax = tax;
         }
 
-        public static Country Create(CountryCode code, CountryTax tax)
+        public static Country Create(CountryId id,CountryCode code, CountryTax tax)
         {
-            Country country = new Country(code, tax);
+            Country country = new Country(id, code, tax);
             return country;
         }
 

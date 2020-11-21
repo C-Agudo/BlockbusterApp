@@ -13,3 +13,8 @@ CREATE TABLE `user` (
 	UNIQUE KEY `email` (`email`)
 ) ENGINE = InnodB DEFEAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE `countries` (
+	`code` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+	`tax` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+	PRIMARY KEY (`code`),
+) ENGINE = InnodB DEFEAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

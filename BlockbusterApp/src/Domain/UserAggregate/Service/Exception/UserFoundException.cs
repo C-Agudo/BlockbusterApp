@@ -15,7 +15,7 @@ namespace BlockbusterApp.src.Domain.UserAggregate.Service.Exception
 
         public static UserFoundException FromEmail(UserEmail userEmail)
         {
-            return new UserFoundException(string.Format("Email {0} " + userEmail.GetValue() + " is already used"));
+            return new UserFoundException(string.Format("Email " + userEmail.GetValue() + " is already used"));
         }
     }
 }

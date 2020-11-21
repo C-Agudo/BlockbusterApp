@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BlockbusterApp.src.Application.UseCase
+namespace BlockbusterApp.src.Application.UseCase.User
 {
     public class SignUpUserUseCase : IUseCase
     {
@@ -41,7 +41,7 @@ namespace BlockbusterApp.src.Application.UseCase
         public IResponse Execute(IRequest req)
         {
             SignUpUserRequest request = req as SignUpUserRequest;
-            User user = userFactory.Create
+            Domain.UserAggregate.User user = userFactory.Create
             (
                 request.Id,
                 request.Email,
