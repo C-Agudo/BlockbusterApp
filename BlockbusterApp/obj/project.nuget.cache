@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "huXr08tihUt/ZmxCFLVymKQhl1HxDyvbKSyQQHtIwVScNoj0bMZPfwD0rAuxiAf/fUGfcO5ee/zt7K3N8z5eSA==",
+  "dgSpecHash": "pSTjoJ2DoFeGJsMRcQNcdkjeZOvhdhEtJ5dJP1gxw9NF86g0MMpiW/P3Lw0WkSKRvl+QthCYJaMt5pVvaILs6w==",
   "success": true,
   "projectFilePath": "C:\\Users\\ACER-1\\source\\repos\\BlockbusterApp\\BlockbusterApp\\BlockbusterApp.csproj",
   "expectedPackageFiles": [
@@ -175,6 +175,7 @@
     "C:\\Users\\ACER-1\\.nuget\\packages\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512",
     "C:\\Users\\ACER-1\\.nuget\\packages\\newtonsoft.json\\11.0.2\\newtonsoft.json.11.0.2.nupkg.sha512",
     "C:\\Users\\ACER-1\\.nuget\\packages\\newtonsoft.json.bson\\1.0.1\\newtonsoft.json.bson.1.0.1.nupkg.sha512",
+    "C:\\Users\\ACER-1\\.nuget\\packages\\nunit\\3.12.0\\nunit.3.12.0.nupkg.sha512",
     "C:\\Users\\ACER-1\\.nuget\\packages\\pomelo.entityframeworkcore.mysql\\2.1.0\\pomelo.entityframeworkcore.mysql.2.1.0.nupkg.sha512",
     "C:\\Users\\ACER-1\\.nuget\\packages\\pomelo.jsonobject\\1.1.1\\pomelo.jsonobject.1.1.1.nupkg.sha512",
     "C:\\Users\\ACER-1\\.nuget\\packages\\remotion.linq\\2.2.0\\remotion.linq.2.2.0.nupkg.sha512",

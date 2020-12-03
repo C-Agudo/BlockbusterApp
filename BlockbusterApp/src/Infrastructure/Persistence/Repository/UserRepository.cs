@@ -12,25 +12,23 @@ namespace BlockbusterApp.src.Infrastructure.Persistence.Repository
     public class UserRepository : Repository<User>, IUserRepository
     {
         private readonly IServiceScopeFactory scopeFactory;
-
+        private IServiceScope scope;
+        private BlockbusterAppContext dbContext;
         public UserRepository(BlockbusterAppContext context, IServiceScopeFactory scopeFactory) : base(context)
         {
             this.scopeFactory = scopeFactory;
+            this.scope = scopeFactory.CreateScope();
+            this.dbContext = scope.ServiceProvider.GetRequiredService<BlockbusterAppContext>();
         }
         public void Add(User user)
         {
-            using (var scope = scopeFactory.CreateScope())
-            {
-                var dbContext = scope.ServiceProvider.GetRequiredService<BlockbusterAppContext>();
                 dbContext.Users.Add(user);
-            }
         }
 
         public User FindUserByEmail(UserEmail userEmail)
         {
-           using (IServiceScope scope = scopeFactory.CreateScope())
+            using (IServiceScope scope = scopeFactory.CreateScope())
             {
-                var dbContext = scope.ServiceProvider.GetRequiredService<BlockbusterAppContext>();
                 return dbContext.Users.FirstOrDefault(c => c.userEmail.GetValue() == c.userEmail.GetValue());
             }
         }

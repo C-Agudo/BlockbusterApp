@@ -1,8 +1,13 @@
 {
   "ExpandedNodes": [
     "",
-    "\\BlockbusterApp"
+    "\\BlockbusterApp",
+    "\\BlockbusterApp\\src",
+    "\\BlockbusterApp\\src\\Domain\\UserAggregate",
+    "\\BlockbusterApp\\Tests",
+    "\\BlockbusterApp\\Tests\\Domain\\UserAggregate",
+    "\\BlockbusterApp\\Tests\\Domain\\UserAggregate\\Mothers"
   ],
-  "SelectedNode": "\\BlockbusterApp",
+  "SelectedNode": "\\BlockbusterApp.sln",
   "PreviewInSolutionExplorer": false
 }

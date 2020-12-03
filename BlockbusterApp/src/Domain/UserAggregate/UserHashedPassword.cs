@@ -10,7 +10,6 @@ namespace BlockbusterApp.src.Domain.UserAggregate
     {
         public UserHashedPassword(string value) : base(value)
         {
-
         }
     }
 }

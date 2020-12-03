@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Hosting;
 using BlockbusterApp.src.Domain.CountryAggregate;
+using BlockbusterApp.src.Domain.TokenAggregate;
 
 namespace BlockbusterApp.src.Shared.Infrastructure.Persistence.Context
 {
@@ -17,16 +18,15 @@ namespace BlockbusterApp.src.Shared.Infrastructure.Persistence.Context
         }
 
         public DbSet<User> Users { get; set; }
-        //public DbSet<Token> Tokens { get; set; }
+        public DbSet<Token> Tokens { get; set; }
         public DbSet<Country> Countries { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new UserMap());
             modelBuilder.ApplyConfiguration(new CountryMap());
-            //modelBuilder.ApplyConfiguration(new TokenMap());
+            modelBuilder.ApplyConfiguration(new TokenMap());
             base.OnModelCreating(modelBuilder);
-        }
-
+        }                                                        
     }
 }

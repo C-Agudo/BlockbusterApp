@@ -1,4 +1,5 @@
-﻿using BlockbusterApp.src.Domain.UserAggregate.Event;
+﻿
+using BlockbusterApp.src.Domain.UserAggregate.Event;
 using BlockbusterApp.src.Shared.Domain;
 using System;
 using System.Collections.Generic;

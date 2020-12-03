@@ -9,7 +9,7 @@ namespace BlockbusterApp.src.Shared.Infrastructure.Bus.Middleware
 
         public IMiddlewareHandler SetNext(IMiddlewareHandler handler)
         {
-            nextHandler = handler;
+            this.nextHandler = handler;
             return handler;
         }
 

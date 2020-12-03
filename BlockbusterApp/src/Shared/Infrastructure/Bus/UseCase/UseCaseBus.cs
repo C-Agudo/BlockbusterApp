@@ -30,6 +30,8 @@ namespace BlockbusterApp.src.Shared.Infrastructure.Bus.UseCase
 
         public IResponse Dispatch(IRequest req)
         {
+            Console.WriteLine(req.GetType());
+
             string className = req.GetType().ToString();
             string[] words = className.Split(new string[] { "Request" }, StringSplitOptions.None);
 

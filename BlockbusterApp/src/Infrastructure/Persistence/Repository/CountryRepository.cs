@@ -12,19 +12,17 @@ namespace BlockbusterApp.src.Infrastructure.Persistence.Repository
     public class CountryRepository : Repository<Country>, ICountryRepository
     {
         private readonly IServiceScopeFactory scopeFactory;
-
+        private IServiceScope scope;
+        private BlockbusterAppContext dbContext;
         public CountryRepository(BlockbusterAppContext context, IServiceScopeFactory scopeFactory) : base(context)
         {
             this.scopeFactory = scopeFactory;
-
+            this.scope = scopeFactory.CreateScope();
+            this.dbContext = scope.ServiceProvider.GetRequiredService<BlockbusterAppContext>();
         }
         public Country FindCountryByCode(CountryCode code)
         {
-            using (IServiceScope scope = scopeFactory.CreateScope())
-            {
-                var dbContext = scope.ServiceProvider.GetRequiredService<BlockbusterAppContext>();
                 return dbContext.Countries.FirstOrDefault(c => c.code.GetValue() == c.code.GetValue());
-            }
         }
     }
 }

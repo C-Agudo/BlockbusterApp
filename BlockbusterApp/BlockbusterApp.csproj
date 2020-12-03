@@ -3,10 +3,14 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <StartupObject>BlockbusterApp.Program</StartupObject>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>8.0</LangVersion>	  
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Tests\Application\" />
+    <Folder Include="Tests\Infrastructure\" />
+    <Folder Include="Tests\UI\" />
+    <Folder Include="Tests\Shared\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
@@ -15,6 +19,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
+    <PackageReference Include="NUnit" Version="3.12.0" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="2.4.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="4.5.3" />

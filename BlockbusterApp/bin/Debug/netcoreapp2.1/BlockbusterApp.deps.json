@@ -29,6 +29,7 @@
           "Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer": "2.2.0",
           "Microsoft.AspNetCore.Razor.Design": "2.1.2",
           "Microsoft.NETCore.App": "2.1.0",
+          "NUnit": "3.12.0",
           "Pomelo.EntityFrameworkCore.MySql": "2.1.0",
           "Swashbuckle.AspNetCore": "2.4.0",
           "Swashbuckle.AspNetCore.Filters": "4.5.3"
@@ -79,6 +80,20 @@
         },
         "compile": {
           "lib/netcoreapp2.1/MySqlConnector.dll": {}
+        }
+      },
+      "NUnit/3.12.0": {
+        "dependencies": {
+          "NETStandard.Library": "2.0.3"
+        },
+        "runtime": {
+          "lib/netstandard2.0/nunit.framework.dll": {
+            "assemblyVersion": "3.12.0.0",
+            "fileVersion": "3.12.0.0"
+          }
+        },
+        "compile": {
+          "lib/netstandard2.0/nunit.framework.dll": {}
         }
       },
       "Pomelo.EntityFrameworkCore.MySql/2.1.0": {
@@ -3383,6 +3398,13 @@
       "sha512": "sha512-7jS8P+XOw+vS/reuwEEGhtAKvagiOEtOsu5/46Bnuiw+DgOjAFgMSojkiVaZi9DHcatP8jgmjY67iDGVZByQng==",
       "path": "mysqlconnector/0.42.1",
       "hashPath": "mysqlconnector.0.42.1.nupkg.sha512"
+    },
+    "NUnit/3.12.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-3oJTrcUcT9wmweBUwgUf0f1XIYy6RZq2ziV+RM95HMKAJGsHPN2i3MKK1dAPvDPMRLz799Llj4eyu/STB9Q7OA==",
+      "path": "nunit/3.12.0",
+      "hashPath": "nunit.3.12.0.nupkg.sha512"
     },
     "Pomelo.EntityFrameworkCore.MySql/2.1.0": {
       "type": "package",

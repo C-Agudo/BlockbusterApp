@@ -9,8 +9,8 @@ namespace BlockbusterApp.src.Shared.Infrastructure.Bus.UseCase
 {
     public interface IUseCaseBus
     {
-        void Subscribe(IUseCase useCase);
-        IResponse Dispatch(IRequest req);
-        void SetMiddlewares(List<IMiddlewareHandler> middlewareHanders);
+        public void Subscribe(IUseCase useCase);
+        public IResponse Dispatch(IRequest req);
+        public void SetMiddlewares(List<IMiddlewareHandler> middlewareHanders);
     }
 }
