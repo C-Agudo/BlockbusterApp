@@ -27,10 +27,13 @@ namespace BlockbusterApp.src.Infrastructure.Persistence.Repository
 
         public User FindUserByEmail(UserEmail userEmail)
         {
-            using (IServiceScope scope = scopeFactory.CreateScope())
-            {
-                return dbContext.Users.FirstOrDefault(c => c.userEmail.GetValue() == c.userEmail.GetValue());
-            }
+            using IServiceScope scope = scopeFactory.CreateScope();
+            return dbContext.Users.FirstOrDefault(c => c.userEmail.GetValue() == c.userEmail.GetValue());
+        }
+        public User FindUserById(UserId userId)
+        {
+            using IServiceScope scope = scopeFactory.CreateScope();
+            return dbContext.Users.FirstOrDefault(c => c.userId.GetValue() == c.userId.GetValue());
         }
     }
 }
