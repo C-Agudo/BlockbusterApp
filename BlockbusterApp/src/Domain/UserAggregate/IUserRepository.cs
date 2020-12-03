@@ -9,6 +9,7 @@ namespace BlockbusterApp.src.Domain.UserAggregate
     {
         void Add(User user);
         User FindUserByEmail(UserEmail userEmail);
+        User FindUserById(UserId userId);
 
     }
 }
