@@ -1,20 +1,19 @@
-﻿using BlockbusterApp.src.Shared.Application.Bus.UseCase;
-using BlockbusterApp.src.Shared.Infrastructure.Bus.Middleware;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Diagnostics;
+using BlockbusterApp.src.Shared.Application.Bus.UseCase;
+using BlockbusterApp.src.Shared.Infrastructure.Bus.Middleware;
 
 namespace BlockbusterApp.src.Shared.Infrastructure.Bus.UseCase
 {
     public class UseCaseBus : IUseCaseBus
     {
-        private Dictionary<string, UseCaseMiddleware> useCases;
+        private Dictionary<string, IUseCase> useCases;
         private List<IMiddlewareHandler> middlewareHanders;
 
         public UseCaseBus()
         {
-            this.useCases = new Dictionary<string, UseCaseMiddleware>();
+            useCases = new Dictionary<string, IUseCase>();
         }
 
         public void SetMiddlewares(List<IMiddlewareHandler> middlewareHanders)
@@ -24,33 +23,63 @@ namespace BlockbusterApp.src.Shared.Infrastructure.Bus.UseCase
 
         public void Subscribe(IUseCase useCase)
         {
-            string className = useCase.GetType().ToString();
-            useCases.Add(className, new UseCaseMiddleware(useCase));
+            string useCaseFullName = useCase.GetType().ToString();
+            useCases.Add(useCaseFullName, useCase);
         }
 
         public IResponse Dispatch(IRequest req)
         {
-            Console.WriteLine(req.GetType());
+            string previousCallingClass = GetPreviousCallingClass();
 
-            string className = req.GetType().ToString();
-            string[] words = className.Split(new string[] { "Request" }, StringSplitOptions.None);
+            IMiddlewareHandler middlewareHandler = this.loadUseCase(req, previousCallingClass);
+            middlewareHandler = this.loadHandlers(previousCallingClass, middlewareHandler);
 
-            string useCaseName = words[0] + "UseCase";
+            return middlewareHandler.Handle(req);
+        }
 
-            if (!useCases.ContainsKey(useCaseName))
+        public static string GetPreviousCallingClass()
+        {
+            StackTrace stackTrace = new StackTrace();
+            var mth = stackTrace.GetFrame(2).GetMethod();
+            var cls = mth.ReflectedType.Name;
+
+            return cls;
+        }
+
+        private IMiddlewareHandler loadUseCase(IRequest req, string previousCallingClass)
+        {
+            string requestNamespace = req.GetType().Namespace;            string requestName = req.GetType().Name;
+            string useCaseName = requestName.Replace("Request", "UseCase");
+            string useCaseFullName = requestNamespace + "." + useCaseName;
+
+            if (!useCases.ContainsKey(useCaseFullName))
             {
-                throw new Exception("Not exists the usecase " + useCaseName);
+                throw new Exception("Not exists the usecase " + useCaseFullName);
             }
 
-            IMiddlewareHandler mHandler = this.useCases[useCaseName];
+            IUseCase useCase = this.useCases[useCaseFullName];
 
-            foreach (IMiddlewareHandler middlewareHandler in this.middlewareHanders)
+
+            IMiddlewareHandler middlewareHandler = new UseCaseMiddleware(useCase);
+
+            return middlewareHandler;
+        }
+
+        private IMiddlewareHandler loadHandlers(string previousCallingClass, IMiddlewareHandler middlewareHandler)
+        {
+            foreach (IMiddlewareHandler handler in this.middlewareHanders)
             {
-                middlewareHandler.SetNext(mHandler);
-                mHandler = middlewareHandler;
+                //excludeTransactionMiddlewareWhenUseCaseBusIsNotExecutingFromController
+                if (previousCallingClass != "Controller" && (handler.GetType().Name == "TransactionMiddleware" || handler.GetType().Name == "ExceptionMiddleware"))
+                {
+                    continue;
+                }
+
+                handler.SetNext(middlewareHandler);
+                middlewareHandler = handler;
             }
 
-            return mHandler.Handle(req);
+            return middlewareHandler;
         }
     }
 }

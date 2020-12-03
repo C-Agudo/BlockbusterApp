@@ -16,22 +16,24 @@ namespace BlockbusterApp.src.Shared.Infrastructure.Bus.Middleware
 
         public override IResponse Handle(IRequest request)
         {
-            var transaction = blockbusterAppContext.Database.BeginTransaction(System.Data.IsolationLevel.ReadCommitted);
-
-            try
+            //var transaction = blockbusterAppContext.Database.BeginTransaction(System.Data.IsolationLevel.ReadCommitted);
+            using (var transaction = this.blockbusterAppContext.Database.BeginTransaction())
             {
+           
+                try
+                {
                 IResponse response = base.Handle(request);
                 blockbusterAppContext.SaveChanges();
                 transaction.Commit();
                 return response;
-            }
-            catch(System.Exception e)
-            {
-                transaction.Rollback();
-                throw e;
-            }
+                }
+                catch(System.Exception e)
+                {
+                    transaction.Rollback();
+                    throw e;
+                }
 
-            
+            }
         }
     }
 }
