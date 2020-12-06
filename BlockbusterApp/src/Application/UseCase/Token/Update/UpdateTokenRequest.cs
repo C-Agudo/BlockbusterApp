@@ -8,13 +8,11 @@ namespace BlockbusterApp.src.Application.UseCase.Token.Update
 {
     public class UpdateTokenRequest : IRequest
     {
-        public UpdateTokenRequest(string email, string password)
+        public UpdateTokenRequest(string token)
         {
-            this.Email = email;
-            this.Password = password;
+            this.Token = token;
         }
 
-        public string Email { get; }
-        public string Password { get; }
+        public string Token { get; }
     }
 }

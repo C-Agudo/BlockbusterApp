@@ -27,7 +27,7 @@ namespace BlockbusterApp.src.Application.UseCase.Token.Delete
         public IResponse Execute(IRequest req)
         {
             DeleteTokenRequest request = req as DeleteTokenRequest;
-            string userId = decoder.DecodeUserId(request.Hash);
+            TokenUserId userId = decoder.DecodeUserId(request.Token);
             tokenRepository.Delete(userId);
             return tokenConverter.Convert();
         }

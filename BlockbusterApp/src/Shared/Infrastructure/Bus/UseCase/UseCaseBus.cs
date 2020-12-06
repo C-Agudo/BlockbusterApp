@@ -48,7 +48,8 @@ namespace BlockbusterApp.src.Shared.Infrastructure.Bus.UseCase
 
         private IMiddlewareHandler loadUseCase(IRequest req, string previousCallingClass)
         {
-            string requestNamespace = req.GetType().Namespace;            string requestName = req.GetType().Name;
+            string requestNamespace = req.GetType().Namespace;
+            string requestName = req.GetType().Name;
             string useCaseName = requestName.Replace("Request", "UseCase");
             string useCaseFullName = requestNamespace + "." + useCaseName;
 

@@ -34,10 +34,7 @@ namespace BlockbusterApp.src.Infrastructure.Service.Token
 
         public Domain.UserAggregate.User FindUserFromEmailAndPassword(string email, string password)
         {
-            //Domain.UserAggregate.User user = userRepository.FindUserByEmail(new UserEmail(email));
             FindUserByEmailResponse res = (FindUserByEmailResponse)useCaseBus.Dispatch(new FindUserByEmailRequest(email));
-            //Console.WriteLine(res);
-            //FindUserByEmailResponse response = res as FindUserByEmailResponse;
             Domain.UserAggregate.User user = res.User;
             passwordValidator.Validate(hashing.Hash(password).GetValue(), user.userHashedPassword.GetValue());
             return user;

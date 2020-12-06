@@ -8,11 +8,11 @@ namespace BlockbusterApp.src.Application.UseCase.Token.Delete
 {
     public class DeleteTokenRequest : IRequest
     {
-        public DeleteTokenRequest(string hash)
+        public DeleteTokenRequest(string token)
         {
-            this.Hash = hash;
+            this.Token = token;
         }
 
-        public string Hash { get; }
+        public string Token { get; }
     }
 }

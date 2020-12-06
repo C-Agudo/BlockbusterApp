@@ -156,7 +156,7 @@ namespace BlockbusterApp
             services.AddScoped<EventDispatcherSyncMiddleware>();
             services.AddScoped<ExceptionMiddleware>();
             //services.AddSingleton<IMiddlewareHandler, MiddlewareHandler>();
-            services.AddScoped<TransactionMiddleware>();
+            services.AddSingleton<TransactionMiddleware>();
             services.AddScoped<UseCaseMiddleware>();
                         
                         //UseCase
@@ -212,11 +212,15 @@ namespace BlockbusterApp
             IUseCase findCountryUseCase = serviceProvider.GetService<FindCountryUseCase>();
             IUseCase createTokenUseCase = serviceProvider.GetService<CreateTokenUseCase>();
             IUseCase findUserByEmailUseCase = serviceProvider.GetService<FindUserByEmailUseCase>();
+            IUseCase updateTokenUseCase = serviceProvider.GetService<UpdateTokenUseCase>();
+            IUseCase deleteTokenUseCase = serviceProvider.GetService<DeleteTokenUseCase>();
             useCaseBus.Subscribe(signUpUserUseCase);
             useCaseBus.Subscribe(welcomeEmailUseCase);
             useCaseBus.Subscribe(findCountryUseCase);
             useCaseBus.Subscribe(createTokenUseCase);
             useCaseBus.Subscribe(findUserByEmailUseCase);
+            useCaseBus.Subscribe(updateTokenUseCase);
+            useCaseBus.Subscribe(deleteTokenUseCase);
 
             List<IMiddlewareHandler> middlewareHandlers = new List<IMiddlewareHandler>
             {

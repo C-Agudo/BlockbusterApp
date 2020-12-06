@@ -55,7 +55,7 @@ namespace BlockbusterApp.src.Application.UseCase.User
 
             eventProvider.RecordEvents(user.ReleaseEvents());
             userValidator.Validate(user.userEmail);
-            useCaseBus.Dispatch(new FindCountryRequest(user.userCountry.GetValue()));
+            //useCaseBus.Dispatch(new FindCountryRequest(user.userCountry.GetValue()));
             userRepository.Add(user);
             return userConverter.Convert();
         }

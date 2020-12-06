@@ -1,6 +1,7 @@
 ﻿using BlockbusterApp.src.Domain.TokenAggregate;
 using BlockbusterApp.src.Infrastructure.Service.Token;
 using BlockbusterApp.src.Shared.Application.Bus.UseCase;
+using BlockbusterApp.src.Shared.Infrastructure.Security.Authentication.JWT;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,24 +15,28 @@ namespace BlockbusterApp.src.Application.UseCase.Token.Update
         private ITokenFactory tokenFactory;
         private ITokenRepository tokenRepository;
         private UpdateTokenConverter tokenConverter;
+        private IJWTDecoder decoder;
         public UpdateTokenUseCase
         (
             TokenAdapter tokenAdapter,
             ITokenFactory tokenFactory,
             ITokenRepository tokenRepository,
-            UpdateTokenConverter tokenConverter
+            UpdateTokenConverter tokenConverter,
+            IJWTDecoder decoder
         )
         {
             this.tokenAdapter = tokenAdapter;
             this.tokenFactory = tokenFactory;
             this.tokenRepository = tokenRepository;
             this.tokenConverter = tokenConverter;
+            this.decoder = decoder;
         }
         public IResponse Execute(IRequest req)
         {
             UpdateTokenRequest request = req as UpdateTokenRequest;
-            Dictionary<string, string> payload = this.tokenAdapter.FindPayloadFromEmailAndPassword(request.Email, request.Password);
-            Domain.TokenAggregate.Token token = this.tokenFactory.Create(payload);
+            TokenUserId tokenUserId = decoder.DecodeUserId(request.Token);
+            TokenHash tokenHash = TokenHash.Create(request.Token);
+            Domain.TokenAggregate.Token token = Domain.TokenAggregate.Token.Create(tokenHash, tokenUserId);
             tokenRepository.Update(token);
             return tokenConverter.Convert(token);
         }

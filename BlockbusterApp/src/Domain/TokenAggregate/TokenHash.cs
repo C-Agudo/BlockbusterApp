@@ -12,6 +12,9 @@ namespace BlockbusterApp.src.Domain.TokenAggregate
         {
 
         }
-
+        public static TokenHash Create(string tokenHash)
+        {
+            return new TokenHash(tokenHash);
+        }
     }
 }
