@@ -28,6 +28,11 @@ namespace BlockbusterApp.src.Shared.UI.Rest.Controller
             {
                 return BadRequest(response);
             }
+            if (response is ExceptionResponse && ((ExceptionResponse)response).Code == "401")
+            {
+                return StatusCode(401, response);
+            }
+            
             if (response is ExceptionResponse && ((ExceptionResponse)response).Code == "500")
             {
                 return StatusCode(500, response);
