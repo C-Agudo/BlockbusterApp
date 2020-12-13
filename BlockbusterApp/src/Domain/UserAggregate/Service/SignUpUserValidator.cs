@@ -18,7 +18,7 @@ namespace BlockbusterApp.src.Domain.UserAggregate.Service
         {
             User user = userRepository.FindUserByEmail(userEmail);
 
-            if(user is User)
+            if(user.userEmail.GetValue() == userEmail.GetValue())
             {
                 throw UserFoundException.FromEmail(userEmail);
             }

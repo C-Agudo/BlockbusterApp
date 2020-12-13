@@ -12,13 +12,13 @@ namespace BlockbusterApp.src.Domain.UserAggregate
     {
         public UserId userId { get; }
         public UserEmail userEmail { get; }
-        public UserHashedPassword userHashedPassword { get; }
-        public UserFirstname userFirstname { get; }
-        public UserLastname userLastname { get; }
+        public UserHashedPassword userHashedPassword { get; set; }
+        public UserFirstname userFirstname { get; set; }
+        public UserLastname userLastname { get; set; }
         public UserCountry userCountry { get; }
         public UserRole userRole { get; }
 
-        public User 
+        private User 
         (
             UserId userId,
             UserEmail userEmail,

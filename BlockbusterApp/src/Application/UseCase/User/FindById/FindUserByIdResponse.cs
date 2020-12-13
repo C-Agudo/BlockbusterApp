@@ -11,20 +11,20 @@ namespace BlockbusterApp.src.Application.UseCase.User.FindById
     {
         public FindUserByIdResponse(Domain.UserAggregate.User user)
         {
-            this.userId = user.userId;
-            this.userEmail = user.userEmail;
-            this.userFirstname = user.userFirstname;
-            this.userLastname = user.userLastname;
-            this.userCountry = user.userCountry;
-            this.userRole = user.userRole;
+            this.userId = user.userId.GetValue();
+            this.userEmail = user.userEmail.GetValue();
+            this.userFirstname = user.userFirstname.GetValue();
+            this.userLastname = user.userLastname.GetValue();
+            this.userCountry = user.userCountry.GetValue();
+            this.userRole = user.userRole.GetValue();
         }
 
-        public UserId userId { get; }
-        public UserEmail userEmail { get; }
-        public UserFirstname userFirstname { get; }
-        public UserLastname userLastname { get; }
-        public UserCountry userCountry { get; }
-        public UserRole userRole { get; }
+        public string userId { get; }
+        public string userEmail { get; }
+        public string userFirstname { get; }
+        public string userLastname { get; }
+        public string userCountry { get; }
+        public string userRole { get; }
 
     }
 }

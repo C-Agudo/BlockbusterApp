@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BlockbusterApp.src.Shared.Application.Bus.UseCase;
 
 namespace BlockbusterApp.src.Infrastructure.Persistence.Repository
 {
@@ -28,12 +29,23 @@ namespace BlockbusterApp.src.Infrastructure.Persistence.Repository
         public User FindUserByEmail(UserEmail userEmail)
         {
             using IServiceScope scope = scopeFactory.CreateScope();
-            return dbContext.Users.FirstOrDefault(c => c.userEmail.GetValue() == c.userEmail.GetValue());
+            User user = dbContext.Users.SingleOrDefault(u => u.userEmail.GetValue() == userEmail.GetValue());
+            return user;
         }
         public User FindUserById(UserId userId)
         {
             using IServiceScope scope = scopeFactory.CreateScope();
-            return dbContext.Users.FirstOrDefault(c => c.userId.GetValue() == c.userId.GetValue());
+            return dbContext.Users.FirstOrDefault(c => c.userId.GetValue() == userId.GetValue());
+        }
+
+        public void Update(User updatedUser)
+        {
+            dbContext.Users.Update(updatedUser);
+        }
+
+        public List<User> GetUsers(Dictionary<string, int> page)
+        {
+            return dbContext.Users.Skip((page[Pagination.STR_NUMBER]-1) * page[Pagination.STR_SIZE]).ToList();
         }
     }
 }

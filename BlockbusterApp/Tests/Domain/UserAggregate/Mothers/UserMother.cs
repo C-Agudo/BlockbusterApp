@@ -10,7 +10,7 @@ namespace BlockbusterApp.Tests.Domain.UserAggregate.Mothers
     {
         public static User Create()
         {
-            return new User
+            return User.SignUp
             (
                 UserIdMother.Create(),
                 UserEmailMother.Create(),
