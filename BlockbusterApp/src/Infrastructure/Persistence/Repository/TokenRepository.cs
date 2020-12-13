@@ -44,7 +44,7 @@ namespace BlockbusterApp.src.Infrastructure.Persistence.Repository
 
         public Token FindById(TokenUserId userId)
         {
-            return dbContext.Tokens.FirstOrDefault(c => c.userId.GetValue() == c.userId.GetValue());
+            return dbContext.Tokens.FirstOrDefault(c => c.userId.GetValue() == userId.GetValue());
         }
 
         public void Delete(TokenUserId userId)

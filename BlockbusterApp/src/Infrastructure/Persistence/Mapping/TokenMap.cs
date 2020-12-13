@@ -25,7 +25,7 @@ namespace BlockbusterApp.src.Infrastructure.Persistence.Mapping
             builder
                 .Property(c => c.hash)
                 .HasColumnName("hash")
-                .HasColumnType("nvarchar(255)")
+                .HasColumnType("nvarchar(1000)")
                 .HasConversion(
                     v => v.GetValue(),
                     v => new TokenHash(v)
