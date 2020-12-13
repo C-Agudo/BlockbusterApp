@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using BlockbusterApp.src.Application.Event;
+using BlockbusterApp.src.Application.UseCase.Category.Create;
 using BlockbusterApp.src.Application.UseCase.Country;
 using BlockbusterApp.src.Application.UseCase.Email;
 using BlockbusterApp.src.Application.UseCase.Token;
@@ -11,13 +13,18 @@ using BlockbusterApp.src.Application.UseCase.Token.Delete;
 using BlockbusterApp.src.Application.UseCase.Token.Update;
 using BlockbusterApp.src.Application.UseCase.User;
 using BlockbusterApp.src.Application.UseCase.User.Find;
+using BlockbusterApp.src.Application.UseCase.User.FindById;
+using BlockbusterApp.src.Application.UseCase.User.GetAll;
+using BlockbusterApp.src.Application.UseCase.User.Update;
 using BlockbusterApp.src.Domain;
+using BlockbusterApp.src.Domain.CategoryAggregate;
 using BlockbusterApp.src.Domain.CountryAggregate;
 using BlockbusterApp.src.Domain.CountryAggregate.Service;
 using BlockbusterApp.src.Domain.TokenAggregate;
 using BlockbusterApp.src.Domain.UserAggregate;
 using BlockbusterApp.src.Domain.UserAggregate.Service;
 using BlockbusterApp.src.Infrastructure.Persistence.Repository;
+using BlockbusterApp.src.Infrastructure.Service.Category;
 using BlockbusterApp.src.Infrastructure.Service.Hashing;
 using BlockbusterApp.src.Infrastructure.Service.Mailer;
 using BlockbusterApp.src.Infrastructure.Service.Token;
@@ -32,9 +39,11 @@ using BlockbusterApp.src.Shared.Infrastructure.Event;
 using BlockbusterApp.src.Shared.Infrastructure.Persistence.Context;
 using BlockbusterApp.src.Shared.Infrastructure.Persistence.Repository;
 using BlockbusterApp.src.Shared.Infrastructure.Security.Authentication.JWT;
+using BlockbusterApp.src.Shared.Infrastructure.Security.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Versioning;
@@ -44,6 +53,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace BlockbusterApp
@@ -88,6 +98,8 @@ namespace BlockbusterApp
             services.AddDbContextPool<BlockbusterAppContext>(options => options
                 .UseMySql(Configuration.GetConnectionString("DefaultConnection"))
             );
+
+            
             //Application
                 //User
             services.AddScoped<SignUpUserUseCase>();
@@ -98,7 +110,22 @@ namespace BlockbusterApp
             services.AddScoped<FindUserByEmailConverter>();
             services.AddScoped<FindUserByEmailUseCase>();
             services.AddScoped<IRequest, FindUserByEmailRequest>();
-            services.AddScoped<IResponse, FindUserByEmailResponse>();
+            services.AddScoped<IResponse, FindUserByEmailResponse>(); 
+            
+            services.AddScoped<FindUserByIdConverter>();
+            services.AddScoped<FindUserByIdUseCase>();
+            services.AddScoped<IRequest, FindUserByIdRequest>();
+            services.AddScoped<IResponse, FindUserByIdResponse>();
+
+            services.AddScoped<UpdateUserConverter>();
+            services.AddScoped<UpdateUserUseCase>();
+            services.AddScoped<IRequest, UpdateUserRequest>();
+            services.AddScoped<IResponse, UpdateUserResponse>();
+
+            services.AddScoped<GetAllUsersConverter>();
+            services.AddScoped<GetAllUsersUseCase>();
+            services.AddScoped<IRequest, GetAllUsersRequest>();
+            services.AddScoped<IResponse, GetAllUsersResponse>();
                 //Country
             services.AddScoped<FindCountryUseCase>();
             services.AddScoped<IRequest, FindCountryRequest>();
@@ -128,20 +155,29 @@ namespace BlockbusterApp
             services.AddScoped<IResponse, DeleteTokenResponse>();
             services.AddScoped<DeleteTokenConverter>();
 
+            //Category
+            services.AddScoped<CreateCategoryUseCase>();
+            services.AddScoped<IRequest, CreateCategoryRequest>();
+            services.AddScoped<IResponse, CreateCategoryResponse>();
+            services.AddScoped<CreateCategoryConverter>();
+
             //Domain
             services.AddScoped<IUserFactory, UserFactory>();
+            services.AddScoped<IUserUpdater, UserUpdater>();
             services.AddScoped<SignUpUserValidator>();
             services.AddScoped<CountryFinderValidator>();
             services.AddScoped<ITokenFactory, TokenFactory>();
-
+            services.AddScoped<FindByIdValidator>();
             services.AddScoped<PasswordValidator>();
+            services.AddScoped<ICategoryFactory, CategoryFactory>();
 
             //Infra
-                //Repository
+            //Repository
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ICountryRepository, CountryRepository>();
             services.AddScoped<ITokenRepository, TokenRepository>();
-                //Hashing
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            //Hashing
             services.AddScoped<IHashing, DefaultHashing>();
                 //Mailer
             services.AddScoped<IMailer, SendGridMailer>();
@@ -155,13 +191,13 @@ namespace BlockbusterApp
                         
             services.AddScoped<EventDispatcherSyncMiddleware>();
             services.AddScoped<ExceptionMiddleware>();
-            //services.AddSingleton<IMiddlewareHandler, MiddlewareHandler>();
             services.AddSingleton<TransactionMiddleware>();
             services.AddScoped<UseCaseMiddleware>();
                         
                         //UseCase
             services.AddSingleton<IUseCaseBus, UseCaseBus>();
-                    //Event
+
+            //Event
             services.AddScoped<IDomainEventPublisher, DomainEventPublisherSync>();
             services.AddScoped<IEventBus, EventBus>();
             services.AddScoped<IEventProvider, EventProvider>();
@@ -170,9 +206,15 @@ namespace BlockbusterApp
             services.AddSingleton<BlockbusterAppContext>();
                         //Repository
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-                               
+                    //Security
+                        //Authentication
             services.AddScoped<IJWTEncoder, JWTEncoder>();
             services.AddScoped<IJWTDecoder, JWTDecoder>();
+                        //Authorization
+            services.AddScoped<IUserIdAuthorizator, UserIdAuthorizator>();
+            services.AddScoped<AccesTokenGetter>();
+            services.AddScoped<UserIdAuthorizationValidator>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddMvcCore().AddVersionedApiExplorer(o => o.GroupNameFormat = "'v'VVV");
@@ -187,8 +229,19 @@ namespace BlockbusterApp
             services.AddSwaggerGen(
                 options =>
                 {
+                    options.AddSecurityDefinition("oauth2", new ApiKeyScheme
+                    {
+                        Description = "Standard Authorization header using the Bearer scheme. Example: \"bearer {token}\"",
+                        In = "header",
+                        Name = "Authorization",
+                        Type = "apiKey"
+                    });
+
+                    options.OperationFilter<SecurityRequirementsOperationFilter>();
+
                     var provider = services.BuildServiceProvider()
                                         .GetRequiredService<IApiVersionDescriptionProvider>();
+
                     foreach (var description in provider.ApiVersionDescriptions)
                     {
                         options.SwaggerDoc(
@@ -199,8 +252,7 @@ namespace BlockbusterApp
                                 Version = description.ApiVersion.ToString()
                             });
                     }
-                }
-            );
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -212,15 +264,23 @@ namespace BlockbusterApp
             IUseCase findCountryUseCase = serviceProvider.GetService<FindCountryUseCase>();
             IUseCase createTokenUseCase = serviceProvider.GetService<CreateTokenUseCase>();
             IUseCase findUserByEmailUseCase = serviceProvider.GetService<FindUserByEmailUseCase>();
+            IUseCase findUserByIdUseCase = serviceProvider.GetService<FindUserByIdUseCase>();
+            IUseCase updateUserUseCase = serviceProvider.GetService<UpdateUserUseCase>();
+            IUseCase getAllUsersUseCase = serviceProvider.GetService<GetAllUsersUseCase>();
             IUseCase updateTokenUseCase = serviceProvider.GetService<UpdateTokenUseCase>();
             IUseCase deleteTokenUseCase = serviceProvider.GetService<DeleteTokenUseCase>();
+            IUseCase createCategoryUseCase = serviceProvider.GetService<CreateCategoryUseCase>();
             useCaseBus.Subscribe(signUpUserUseCase);
             useCaseBus.Subscribe(welcomeEmailUseCase);
             useCaseBus.Subscribe(findCountryUseCase);
             useCaseBus.Subscribe(createTokenUseCase);
             useCaseBus.Subscribe(findUserByEmailUseCase);
+            useCaseBus.Subscribe(findUserByIdUseCase);
+            useCaseBus.Subscribe(updateUserUseCase);
+            useCaseBus.Subscribe(getAllUsersUseCase);
             useCaseBus.Subscribe(updateTokenUseCase);
             useCaseBus.Subscribe(deleteTokenUseCase);
+            useCaseBus.Subscribe(createCategoryUseCase);
 
             List<IMiddlewareHandler> middlewareHandlers = new List<IMiddlewareHandler>
             {
@@ -244,7 +304,6 @@ namespace BlockbusterApp
             }
 
             app.UseHttpsRedirection();
-            app.UseAuthentication();
 
             app.UseSwagger();
             app.UseSwaggerUI(
@@ -258,6 +317,7 @@ namespace BlockbusterApp
                     }
                 });
             app.UseCors("AllowAllOrigins");
+            app.UseAuthentication();
             app.UseMvc();
         }
     }
